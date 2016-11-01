@@ -5,8 +5,34 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPhotoEditor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+        Title="MainWindow" Height="769" Width="1024">
+    <DockPanel>
+        <Menu x:Name="menuBar" DockPanel.Dock="Top" Width="Auto" Height="20" VerticalAlignment="Top">
+            <MenuItem Header="File" >
+                <MenuItem x:Name="Open" Header="Open" Click="Open_Click" />
+                <MenuItem x:Name="Save_item" Header="Save"  />
+                <Separator/>
+                <MenuItem x:Name="Quit_item" Header="Quit"  />
+            </MenuItem>
+
+            <MenuItem Header="Edit">
+                <MenuItem x:Name="Undo_item" Header="Undo" />
+                <MenuItem x:Name="Redo_item" Header="Redo"  />
+                <Separator/>
+                <MenuItem x:Name="Discard_item" Header="Discard Changes"  />
+            </MenuItem>
+
+            <MenuItem Header="Effects" >
+                <MenuItem x:Name="RGB_item" Header="RGB Modifier" />
+                <MenuItem x:Name="BSC_item" Header="BSC Modifier"  />
+                <MenuItem x:Name="Grey_item" Header="Custom Greyscale"  />
+                <MenuItem x:Name="Custom_item" Header="Custom Matrix Transform"  />
+                <MenuItem x:Name="Op_grey_item" Header="Optimized Greyscale"  />
+                <MenuItem x:Name="Invert_item" Header="Invert"  />
+            </MenuItem>
+        </Menu>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto">
+            <Image x:Name="mainImage" />
+        </ScrollViewer>
+    </DockPanel>
 </Window>
