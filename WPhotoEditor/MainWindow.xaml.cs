@@ -14,7 +14,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.Runtime.InteropServices;
-using System.IO;
 using Xceed.Wpf.Toolkit;
 
 namespace WPhotoEditor
@@ -27,11 +26,16 @@ namespace WPhotoEditor
         ImageWrapper imageWrapper = new ImageWrapper();
         ImageController imageController = new ImageController();
         ColorDialog cd;
+        BrightSettingsWindow bsWindow;
+        ColorSettingsWindow clrWindow;
 
         public MainWindow()
         {
             InitializeComponent();
         }
+
+        [DllImport("gdi32.dll")]
+        public static extern bool DeleteObject(IntPtr hObject);
 
         private void Open_Click(object sender, RoutedEventArgs e)
         {
@@ -89,22 +93,25 @@ namespace WPhotoEditor
 
         private void ShowSaveDialog()
         {
-            SaveFileDialog savedialog = new SaveFileDialog();
-            savedialog.Title = "Сохранить как...";
-            savedialog.OverwritePrompt = true;
-            savedialog.CheckPathExists = true;
-            savedialog.Filter = "Файлы изображений | *.bmp; *.jpg; *.gif; *.png";
-            if (savedialog.ShowDialog() == true)
+            if (imageWrapper.GetImage() != null)
             {
-                try
+                SaveFileDialog savedialog = new SaveFileDialog();
+                savedialog.Title = "Сохранить как...";
+                savedialog.OverwritePrompt = true;
+                savedialog.CheckPathExists = true;
+                savedialog.Filter = "Файлы изображений | *.bmp; *.jpg; *.gif; *.png";
+                if (savedialog.ShowDialog() == true)
                 {
-                    imageWrapper.GetImage().Save(savedialog.FileName, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    try
+                    {
+                        imageWrapper.GetImage().Save(savedialog.FileName, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    }
+                    catch
+                    {
+                        System.Windows.MessageBox.Show("Ошибка сохранения файла");
+                    }
                 }
-                catch
-                {
-                    System.Windows.MessageBox.Show("Ошибка сохранения файла");
-                }
-            }
+            }         
         }
 
         private void ColorDialog_Click(object sender, RoutedEventArgs e)
@@ -115,53 +122,153 @@ namespace WPhotoEditor
 
         private void Redo_item_Click(object sender, RoutedEventArgs e)
         {
-            DrawingVisual drawingVisual = new DrawingVisual();
-            DrawingContext dc = drawingVisual.RenderOpen();
-            Rect rect = new Rect(0, 0, imageWrapper.GetImage().Width, imageWrapper.GetImage().Height);
-            dc.DrawImage(Bitmap2BitmapImage((System.Drawing.Bitmap)imageWrapper.GetImage()), rect);
-            dc.DrawLine(new Pen(Brushes.Yellow, 4), new Point(0, 0), new Point(100, 100));
-            dc.DrawRectangle(Brushes.Black, new Pen(Brushes.Black, 4), new Rect(10, 10, 100, 100));
-            dc.Close();
-            mainImage.Source = new DrawingImage(drawingVisual.Drawing);
-          
 
-           // System.Drawing.Image img = ImageWpfToGDI(mainImage);
-           // img.Save("111.jpg");
         }
 
-        [DllImport("gdi32.dll")]
-        public static extern bool DeleteObject(IntPtr hObject);
-
-        private BitmapImage Bitmap2BitmapImage(System.Drawing.Bitmap bitmap)
+        private void mainImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            IntPtr hBitmap = bitmap.GetHbitmap();
-            BitmapImage retval;
+            imageController.previousPoint = new System.Drawing.Point(0, 0);
+        }
 
+        public void ResetImageDiplay()
+        {
+            var hBmp = ((System.Drawing.Bitmap)imageWrapper.GetImage()).GetHbitmap();
             try
-            {
-                retval = (BitmapImage)System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-                             hBitmap,
-                             IntPtr.Zero,
-                             Int32Rect.Empty,
-                             BitmapSizeOptions.FromEmptyOptions());
+            {         
+                var options = BitmapSizeOptions.FromEmptyOptions();
+                mainImage.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBmp,
+                    IntPtr.Zero, Int32Rect.Empty, options); ;
             }
             finally
             {
-                DeleteObject(hBitmap);
+                DeleteObject(hBmp);
             }
-
-            return retval;
         }
 
-        private System.Drawing.Image ImageWpfToGDI(Image image)
+        private void mainImage_MouseMove(object sender, MouseEventArgs e)
         {
-            MemoryStream ms = new MemoryStream();
-            var encoder = new System.Windows.Media.Imaging.BmpBitmapEncoder();
-            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(image.Source as System.Windows.Media.Imaging.BitmapSource));
-            encoder.Save(ms);
-            ms.Flush();
-            return System.Drawing.Image.FromStream(ms);
+            try
+            {
+                if (e.RightButton == MouseButtonState.Pressed)
+                {
+                    if (imageWrapper.GetImage() == null)
+                        throw new Exception("Не открыта картинка!");
+                    System.Drawing.Point mousePoint = new System.Drawing.Point((int)e.GetPosition(mainImage).X, 
+                        (int)e.GetPosition(mainImage).Y);
+                    imageController.Draw(imageWrapper.GetImage(), mousePoint);
+
+                    ResetImageDiplay();
+                    mainImage.InvalidateMeasure();
+                    mainImage.InvalidateVisual();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
         }
 
+        private void Small_Click(object sender, RoutedEventArgs e)
+        {
+            imageController.ChooseBrushSize(0);
+        }
+
+        private void Medium_Click(object sender, RoutedEventArgs e)
+        {
+            imageController.ChooseBrushSize(1);
+        }
+
+        private void Thick_Click(object sender, RoutedEventArgs e)
+        {
+            imageController.ChooseBrushSize(2);
+        }
+
+        private void Rotate90_Click(object sender, RoutedEventArgs e)
+        {
+            RotateImage(0);
+        }
+
+        public void RotateImage(byte mode)
+        {
+            try
+            {
+                if (imageWrapper.GetImage() == null)
+                    throw new Exception("Не открыта картинка!");
+                imageController.RotateImage(imageWrapper, mode);
+                ShowImage();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void Rotate180_Click(object sender, RoutedEventArgs e)
+        {
+            RotateImage(1);
+        }
+
+        private void Rotate270_Click(object sender, RoutedEventArgs e)
+        {
+            RotateImage(2);
+        }
+
+        public void RestoreImage()
+        {
+            imageWrapper.RestoreImage();
+        }
+
+        public int[,] GetBackupImageMatrix()
+        {
+            return imageWrapper.GetBackupImageMatrix();
+        }
+
+        private void mainImage_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            try
+            {
+                if (imageWrapper.GetImage() == null)
+                    throw new Exception("Не открыта картинка!");
+                if (Keyboard.IsKeyDown(Key.LeftCtrl))
+                {
+                    imageWrapper.SetImage(imageController.ResizeImage(imageWrapper, e.Delta), true);
+                    ShowImage();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void BrightSettings_Click(object sender, RoutedEventArgs e)
+        {           
+            try
+            {
+                if (imageWrapper.GetImage() == null)
+                    throw new Exception("Не открыта картинка!");
+                bsWindow = new BrightSettingsWindow(this);
+                bsWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void ColorSettings_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (imageWrapper.GetImage() == null)
+                    throw new Exception("Не открыта картинка!");
+                clrWindow = new ColorSettingsWindow(this);
+                clrWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
+        }
     }
 }

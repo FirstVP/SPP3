@@ -8,7 +8,6 @@ namespace WPhotoEditor
 {
     class BWFilter : Filter
     {
-        double gamma = 2.2;
         double bwRedTransforation = 0.2989;
         double bwGreenTransforation = 0.5870;
         double bwBlueTransforation = 0.1140;

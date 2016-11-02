@@ -20,7 +20,8 @@ namespace WPhotoEditor
             panel.Height = currentImage.Height;
             panel.Source = BitmapToBitmapSource(currentImage);
 
-
+            panel.InvalidateMeasure();
+            panel.InvalidateVisual();
         }
 
         public void SetImage(Bitmap img, bool isBackup)
@@ -73,7 +74,7 @@ namespace WPhotoEditor
                     Int32Rect.Empty,
                     BitmapSizeOptions.FromEmptyOptions());
             }
-            catch (Exception e)
+            catch 
             {
                 bitSrc = null;
                 return null;

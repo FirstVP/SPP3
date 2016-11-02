@@ -8,31 +8,34 @@
         Title="MainWindow" Height="769" Width="1024">
     <DockPanel>
         <Menu x:Name="menuBar" DockPanel.Dock="Top" Width="Auto" Height="20" VerticalAlignment="Top">
-            <MenuItem Header="File" >
-                <MenuItem x:Name="Open" Header="Open" Click="Open_Click" />
-                <MenuItem x:Name="Save" Header="Save" Click="Save_Click"  />
-                <Separator/>
-                <MenuItem x:Name="Quit_item" Header="Quit"  />
+            <MenuItem Header="Файл" >
+                <MenuItem x:Name="Open" Header="Открыть" Click="Open_Click" />
+                <MenuItem x:Name="Save" Header="Сохранить как..." Click="Save_Click"  />
             </MenuItem>
 
-            <MenuItem Header="Edit">
+            <MenuItem Header="Изображение" >
+                <MenuItem x:Name="Rotate" Header="Повернуть на...">
+                    <MenuItem x:Name="Rotate90" Header="90°" Click="Rotate90_Click"  />
+                    <MenuItem x:Name="Rotate180" Header="180°" Click="Rotate180_Click"  />
+                    <MenuItem x:Name="Rotate270" Header="270°" Click="Rotate270_Click"  />
+                </MenuItem>
+                <MenuItem x:Name="BrightSettings" Header="Свечение" Click="BrightSettings_Click"  />
+                <MenuItem x:Name="ColorSettings" Header="Баланс цвета..." Click="ColorSettings_Click"  />
+
+            </MenuItem>
+
+            <MenuItem Header="Кисть">
                 <MenuItem x:Name="ColorDialog" Header="Выбрать цвет..." Click="ColorDialog_Click" />
-                <MenuItem x:Name="Redo_item" Header="Redo" Click="Redo_item_Click"  />
-                <Separator/>
-                <MenuItem x:Name="Discard_item" Header="Discard Changes"  />
+                <MenuItem x:Name="PenWidth" Header="Выбрать размер">
+                    <MenuItem x:Name="Small" Header="Малая" Click="Small_Click"  />
+                    <MenuItem x:Name="Medium" Header="Средняя" Click="Medium_Click"  />
+                    <MenuItem x:Name="Thick" Header="Большая" Click="Thick_Click"  />
+                </MenuItem>                
             </MenuItem>
-
-            <MenuItem Header="Effects" >
-                <MenuItem x:Name="RGB_item" Header="RGB Modifier" />
-                <MenuItem x:Name="BSC_item" Header="BSC Modifier"  />
-                <MenuItem x:Name="Grey_item" Header="Custom Greyscale"  />
-                <MenuItem x:Name="Custom_item" Header="Custom Matrix Transform"  />
-                <MenuItem x:Name="Op_grey_item" Header="Optimized Greyscale"  />
-                <MenuItem x:Name="Invert_item" Header="Invert"  />
-            </MenuItem>
+            
         </Menu>
         <ScrollViewer HorizontalScrollBarVisibility="Auto">
-            <Image x:Name="mainImage" />
+            <Image x:Name="mainImage" MouseDown="mainImage_MouseDown" MouseMove="mainImage_MouseMove" MouseWheel="mainImage_MouseWheel" />
         </ScrollViewer>
     </DockPanel>
 </Window>

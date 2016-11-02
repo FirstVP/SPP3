@@ -80,6 +80,7 @@ namespace WPhotoEditor
                 previousPoint.X = mousePoint.X;
                 previousPoint.Y = mousePoint.Y;
             }
+
         }
     }
 }
