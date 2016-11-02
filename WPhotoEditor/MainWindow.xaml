@@ -10,14 +10,14 @@
         <Menu x:Name="menuBar" DockPanel.Dock="Top" Width="Auto" Height="20" VerticalAlignment="Top">
             <MenuItem Header="File" >
                 <MenuItem x:Name="Open" Header="Open" Click="Open_Click" />
-                <MenuItem x:Name="Save_item" Header="Save"  />
+                <MenuItem x:Name="Save" Header="Save" Click="Save_Click"  />
                 <Separator/>
                 <MenuItem x:Name="Quit_item" Header="Quit"  />
             </MenuItem>
 
             <MenuItem Header="Edit">
-                <MenuItem x:Name="Undo_item" Header="Undo" />
-                <MenuItem x:Name="Redo_item" Header="Redo"  />
+                <MenuItem x:Name="ColorDialog" Header="Выбрать цвет..." Click="ColorDialog_Click" />
+                <MenuItem x:Name="Redo_item" Header="Redo" Click="Redo_item_Click"  />
                 <Separator/>
                 <MenuItem x:Name="Discard_item" Header="Discard Changes"  />
             </MenuItem>
