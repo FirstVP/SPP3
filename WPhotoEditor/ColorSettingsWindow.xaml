@@ -5,8 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPhotoEditor"
         mc:Ignorable="d"
-        Title="ColorSettingsWindow" Height="300" Width="300">
+        Title="Баланс цвета" Height="222.667" Width="437.6" Loaded="Window_Loaded" Closing="Window_Closing">
     <Grid>
-        
+        <Slider x:Name="sldR" HorizontalAlignment="Left" Margin="31,95,0,0" VerticalAlignment="Top" Width="76" ValueChanged="sldR_ValueChanged" Maximum="100" Minimum="-100"/>
+        <Slider x:Name="sldG" HorizontalAlignment="Left" Margin="175,95,0,0" VerticalAlignment="Top" Width="76" ValueChanged="sldG_ValueChanged" Maximum="100" Minimum="-100"/>
+        <Slider x:Name="sldB" HorizontalAlignment="Left" Margin="306,95,0,0" VerticalAlignment="Top" Width="76" ValueChanged="sldB_ValueChanged" Maximum="100" Minimum="-100"/>
+        <Label x:Name="lblR" Content="Label" HorizontalAlignment="Left" Margin="35,64,0,0" VerticalAlignment="Top" Width="90
+               "/>
+        <Label x:Name="lblG" Content="Label" HorizontalAlignment="Left" Margin="175,64,0,0" VerticalAlignment="Top" Width="90"/>
+        <Label x:Name="lblB" Content="Label" HorizontalAlignment="Left" Margin="306,64,0,0" VerticalAlignment="Top" Width="90"/>
+        <Button x:Name="btnR" Content="Применить" HorizontalAlignment="Left" Height="28" Margin="31,135,0,0" VerticalAlignment="Top" Width="94" Click="btnR_Click"/>
+        <Button x:Name="btnG" Content="Применить" HorizontalAlignment="Left" Height="28" Margin="175,135,0,0" VerticalAlignment="Top" Width="94" Click="btnG_Click"/>
+        <Button x:Name="btnB" Content="Применить" HorizontalAlignment="Left" Height="28" Margin="306,135,0,0" VerticalAlignment="Top" Width="94" Click="btnB_Click"/>
+
     </Grid>
 </Window>

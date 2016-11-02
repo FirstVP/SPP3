@@ -83,8 +83,7 @@ namespace WPhotoEditor
             sldContrast.Value = 0;
             UpdateAllScrolls();
             currentImageMatrix = mainWindow.GetBackupImageMatrix();
-            mainWindow.RestoreImage();
-            mainWindow.ShowImage();
+            Apply();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -96,10 +95,15 @@ namespace WPhotoEditor
             UpdateScroll(sldContrast, lblContrast);
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Apply()
         {
             mainWindow.RestoreImage();
             mainWindow.ShowImage();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Apply();
         }
 
         private void btnBW_Click(object sender, RoutedEventArgs e)
@@ -109,8 +113,7 @@ namespace WPhotoEditor
             FiltrateImage(2, sldContrast, lblContrast, true);
             UpdateAllScrolls();
             currentImageMatrix = mainWindow.GetBackupImageMatrix();
-            mainWindow.RestoreImage();
-            mainWindow.ShowImage();
+            Apply();
         }
     }
 }
