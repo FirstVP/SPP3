@@ -132,7 +132,8 @@ namespace WPhotoEditor
 
         public void ResetImageDiplay()
         {
-            var hBmp = ((System.Drawing.Bitmap)imageWrapper.GetImage()).GetHbitmap();
+            imageWrapper.SetImage((System.Drawing.Bitmap)imageWrapper.GetImage(), true);
+            var hBmp = ((System.Drawing.Bitmap)imageWrapper.GetImage()).GetHbitmap();        
             try
             {         
                 var options = BitmapSizeOptions.FromEmptyOptions();

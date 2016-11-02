@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPhotoEditor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="769" Width="1024">
+        Title="Фоторедактор" Height="769" Width="1024" Background="Gray">
     <DockPanel>
         <Menu x:Name="menuBar" DockPanel.Dock="Top" Width="Auto" Height="20" VerticalAlignment="Top">
             <MenuItem Header="Файл" >
